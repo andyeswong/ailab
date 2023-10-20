@@ -21,11 +21,6 @@ const onFileChange = (e) => {
         return;
     }
 
-    // file type must be csv
-    if (e.target.files[0].type != 'text/csv') {
-        alert('File must be csv');
-        return;
-    }
     dataset_file.value = e.target.files[0];
 }
 
@@ -153,7 +148,7 @@ const uploadDataset = async () => {
                                                 {{ dataset_file.name }}
                                             </h3>
                                             <!-- Drag and drop file here text -->
-                            
+
                                             <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100"
                                                 id="modal-title">
                                                 or

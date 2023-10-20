@@ -22,7 +22,7 @@ class ModelController extends Controller
     {
         $user = auth()->user();
         $user->load('dataSets');
-        
+
 
         return Inertia::render('Models/Create', [
             'user' => $user,

@@ -38,6 +38,7 @@ Route::middleware('auth')->group(function () {
     // group routes for models
     Route::prefix('models')->group(function () {
         Route::get('/', [ModelController::class, 'index'])->name('models.index');
+        Route::delete('/', [ModelController::class, 'index'])->name('models.index');
         Route::get('/create', [ModelController::class, 'create'])->name('models.create');
         Route::post('/', [ModelController::class, 'store'])->name('models.store');
         Route::get('/{model}', [ModelController::class, 'show'])->name('models.show');

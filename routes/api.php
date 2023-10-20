@@ -19,16 +19,15 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// group of routes for v1 
+// group of routes for v1
 Route::prefix('v1')->group(function () {
     // group of routes for models
     Route::prefix('models')->group(function () {
         Route::post('/',[APIModelsController::class, 'store']);
         Route::post('/{model_token}/status',[APIModelsController::class, 'updateStatus']);
-
         Route::get('/{model_token}/metrics',[APIModelsController::class, 'getMetrics']);
-
         Route::get('/user/{user_id}',[APIModelsController::class, 'getModelsByUser']);
+
     });
 
     // group of routes for datasets
@@ -36,5 +35,5 @@ Route::prefix('v1')->group(function () {
         Route::post('/',[APIDataSetsController::class, 'store']);
         Route::get('/user/{user_id}',[APIDataSetsController::class, 'getDataSetsByUser']);
     });
-    
+
 });
