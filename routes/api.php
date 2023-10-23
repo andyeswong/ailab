@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\APIModelsController;
+use App\Http\Controllers\APICompletionsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,7 +28,12 @@ Route::prefix('v1')->group(function () {
         Route::post('/{model_token}/status',[APIModelsController::class, 'updateStatus']);
         Route::get('/{model_token}/metrics',[APIModelsController::class, 'getMetrics']);
         Route::get('/user/{user_id}',[APIModelsController::class, 'getModelsByUser']);
+    });
 
+    Route::prefix('completions')->group(function () {
+        Route::post('/',[APICompletionsController::class, 'store']);
+        Route::get('/{model_token}',[APICompletionsController::class, 'getCompletionByModel']);
+        Route::post('/{model_token}',[APICompletionsController::class, 'getCompletionByModel']);
     });
 
     // group of routes for datasets

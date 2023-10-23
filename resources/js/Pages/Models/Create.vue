@@ -73,9 +73,10 @@ const trainModel = () => {
   <Head title="AIModels"/>
 
   <AuthenticatedLayout>
-    <template #header>
+    <template #header_left>
       <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">AI models - Create</h2>
     </template>
+
 
 
     <!-- Step 1 modal -->

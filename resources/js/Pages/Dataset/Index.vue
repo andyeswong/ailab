@@ -1,10 +1,10 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
-import axios from 'axios';
 import { ref } from 'vue';
-import { computed } from 'vue';
 import { defineProps, watch, reactive } from 'vue';
+import primarybutton from '@/Components/PrimaryButton.vue';
+import secondarybutton from '@/Components/SecondaryButton.vue';
 
 
 
@@ -33,7 +33,7 @@ watch(reactive_user, async (newValue, oldValue) => {
     <Head title="Datasets" />
 
     <AuthenticatedLayout>
-        <template #header>
+        <template #header_left>
             <div class="flex">
                 <div class="flex-grow">
                     <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Datasets</h2>
@@ -41,10 +41,8 @@ watch(reactive_user, async (newValue, oldValue) => {
 
                 <!-- button to create Models -->
                 <div class="flex-shrink-0">
-                    <a href="/datasets/create"
-                        class="inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-blue-500 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue active:bg-blue-700 transition ease-in-out duration-150">
-                        Upload dataset
-                    </a>
+
+                  <primarybutton @click="goto('/datasets/create')">Upload dataset</primarybutton>
                 </div>
             </div>
 
@@ -62,15 +60,13 @@ watch(reactive_user, async (newValue, oldValue) => {
                                     v-text="dataset.data_set_name"></h3>
                                 <p class="text-gray-600 dark:text-gray-400" v-text="dataset.data_set_description"></p>
                                 <p class="text-gray-600 dark:text-gray-400">
-                                    
+
                                 </p>
                             </div>
-                            <div class="flex-shrink-0">    
-                                <button
-                                    class=" ml-1 inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-green-500 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none focus:borderblue-700 focus:shadow-outline-blue active:bg-blue-700 transition ease-in-out duration-150"
-                                    >
-                                    Explore
-                                </button>
+                            <div class="flex-shrink-0">
+
+
+                                <primarybutton @click="goto('/datasets/' + dataset.id )">Explore</primarybutton>
                             </div>
                         </div>
                     </div>

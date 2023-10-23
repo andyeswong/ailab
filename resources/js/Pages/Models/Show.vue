@@ -4,51 +4,54 @@ import { Head } from '@inertiajs/vue3';
 import axios from 'axios';
 import { reactive } from 'vue';
 import { ref } from 'vue';
+import chat from '@/Components/ChatBox.vue';
 
 const props = defineProps({
     user: Object,
     model: Object,
 });
 
-const chat = ref('');
+// const chat = ref('');
 
 const _model = reactive(props.model);
 
 // add listener for enter key
-document.addEventListener('keydown', function (event) {
-    if (event.key === 'Enter') {
-        // if chat-textarea is focused 
-        if (document.activeElement.id === 'chat-textarea'){
-            event.preventDefault();
-            sendChat();
-        }
-    }
-});
+// document.addEventListener('keydown', function (event) {
+//     if (event.key === 'Enter') {
+//         // if chat-textarea is focused
+//         if (document.activeElement.id === 'chat-textarea'){
+//             event.preventDefault();
+//             sendChat();
+//         }
+//     }
+// });
 
-const sendChat = () => {
-    var form_data = new FormData();
-    // add breakline to chat
-    chat.value += '\n';
-    form_data.append('prompt', chat.value);
-    form_data.append('model_token', _model.model_token);
+// const sendChat = () => {
+//     var form_data = new FormData();
+//     // add breakline to chat
+//     chat.value += '\n';
+//     form_data.append('prompt', chat.value);
+//     form_data.append('model_token', _model.model_token);
+//
+//     axios.post('http://localhost:5000/api/v1/prompt', form_data, {
+//             headers: {
+//                 'Content-Type': 'multipart/form-data'
+//             }
+//         })
+//         .then(function (response) {
+//             console.log(response);
+//             const completion = response.data.completion;
+//             // add completion to chat
+//             chat.value += _model.model_name + ": " +completion;
+//             chat.value += '\n';
+//
+//         })
+//         .catch(function (error) {
+//             console.log(error);
+//         });
+// }
 
-    axios.post('http://localhost:5000/api/v1/prompt', form_data, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        })
-        .then(function (response) {
-            console.log(response);
-            const completion = response.data.completion;
-            // add completion to chat
-            chat.value += _model.model_name + ": " +completion;
-            chat.value += '\n';
 
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
-}
 
 
 
@@ -59,12 +62,17 @@ const sendChat = () => {
     <Head title="AIModels" />
 
     <AuthenticatedLayout>
-        <template #header>
+        <template #header_left>
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">AI models - Explore {{
                 model.model_name }}</h2>
         </template>
         <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 grid grid-cols-3">
+
+
+              <chat :model="model"></chat>
+
+
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900 dark:text-gray-100">
                         <div class="flex">
@@ -78,10 +86,7 @@ const sendChat = () => {
                             </div>
                         </div>
 
-                        <div class="flex">
-                            <textarea id="chat-textarea" v-model="chat" class="w-full h-64 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg p-4 focus:outline-none focus:shadow-outline"
-                            ></textarea>
-                        </div>
+
                     </div>
                 </div>
             </div>

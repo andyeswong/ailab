@@ -164,20 +164,15 @@ var deleteModel = (model) =>{
   <Head title="AIModels"/>
 
   <AuthenticatedLayout>
-    <template #header>
-      <div class="flex">
-        <div class="flex-grow">
+    <template #header_left>
           <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">AI models</h2>
-        </div>
-
-        <!-- button to create Models -->
-        <div class="flex-shrink-0">
-          <primarybutton @click="goto('/models/create')">
-            Create model
-          </primarybutton>
-        </div>
+    </template>
+    <template #header_right>
+      <div class="flex-shrink-0">
+        <primarybutton @click="goto('/models/create')">
+          Create a model
+        </primarybutton>
       </div>
-
     </template>
 
     <Transition>
@@ -297,7 +292,7 @@ var deleteModel = (model) =>{
                 </p>
               </div>
               <div class="flex-shrink-0">
-                <secondarybutton class="mr-1" v-if="model.status == 'trained'" :href="`/models/${model.id}`">
+                <secondarybutton class="mr-1" v-if="model.status == 'trained'" @click="goto(`/models/${model.id}`)" >
                   Explore
                 </secondarybutton>
                 <secondarybutton class="mr-1" v-else>

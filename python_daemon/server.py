@@ -139,7 +139,7 @@ class PusherCallback(TrainerCallback):
             'http://localhost:8000/api/v1/models/' + self.model_token + '/status',
             data=data_status_request
         )
-        
+
         pusher_message_json = {
             "epoch": state.epoch,
             "batch_size": args.per_device_train_batch_size,
@@ -150,8 +150,8 @@ class PusherCallback(TrainerCallback):
         }
         pusher_client.trigger(self.user_id, 'ai_model', {'message': pusher_message_json})
 
-    
-        
+
+
 
 
 
@@ -200,7 +200,7 @@ def train(file, epoch, batch_size, learning_rate, random_filename,user_id):
         save_total_limit=2,
         gradient_accumulation_steps=1,  # Optional - can be used if experiencing memory issues
         remove_unused_columns=False,
-        push_to_hub=False,        
+        push_to_hub=False,
     )
 
     # Create a list of callbacks
@@ -301,12 +301,14 @@ def prompt():
     # method options retuern cors headers
     if request.method == "OPTIONS":
         return jsonify({"status": "success"})
-    
+
     # model path
     model_base_path = request.form.get("model_token")
     model_base_path = "./models/" + model_base_path
     model_path = model_base_path + "/model"
     tokenizer_path = model_base_path + "/tokenizer"
+
+    max_length = int(request.form.get("max_tokens"))
 
     # if model not found
     if not os.path.exists(model_path):
@@ -321,8 +323,8 @@ def prompt():
     model = AutoModelForSeq2SeqLM.from_pretrained(model_path)
 
     prompt = request.form.get("prompt")
-    output = model.generate(**tokenizer(prompt, return_tensors="pt"))
-    completion = tokenizer.decode(output[0], skip_special_tokens=True)
+    output = model.generate(**tokenizer(prompt, return_tensors="pt"), max_length=max_length)
+    completion = tokenizer.decode(output[0], skip_special_tokens=True, clean_up_tokenization_spaces=True)
     # return json response
     res_dict = {"prompt": prompt, "completion": completion}
     return jsonify(res_dict)
@@ -340,7 +342,7 @@ def delete_model(model_token):
             "message": "model not found",
         }
         return jsonify(res_dict)
-    
+
     model_path = model_token + "/model"
     tokenizer_path = model_token + "/tokenizer"
     os.remove(model_path)
