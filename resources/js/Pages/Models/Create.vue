@@ -126,7 +126,7 @@ const trainModel = () => {
       <template #body>
         <div>
           <div>
-            <div class=" dark:text-gray-200 overflow-hidden sm:rounded-lg py-5">
+            <div class=" dark:text-gray-200 overflow-hidden sm:rounded-md py-5">
               <!-- inputs for training params -->
               <div v-for="param in Object.keys(trainingParams)" :key="param" class="flex-grow mt-1">
                 <label for="dataset" class=" pl-3 pr-6 text-base placeholder-gray-600   appearance-none">{{
@@ -161,7 +161,7 @@ const trainModel = () => {
     <div class="py-12">
       <!-- step 1 -->
       <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-md">
           <div class="p-6 text-gray-900 dark:text-gray-100">
             <div class="flex">
               <div class="flex-grow">
@@ -186,7 +186,7 @@ const trainModel = () => {
       <!-- step 2 -->
       <!-- training params -->
       <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mt-5">
-        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-md">
           <div class="p-6 text-gray-900 dark:text-gray-100">
             <div class="flex">
               <div class="flex-grow">
@@ -210,7 +210,7 @@ const trainModel = () => {
     <!-- step 3 -->
     <!-- model name and run it-->
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mt-5" v-show="selectedDataset != null">
-      <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+      <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-md">
         <div class="p-6 text-gray-900 dark:text-gray-100">
           <div class="flex">
             <div class="flex-grow">

@@ -52,7 +52,7 @@ const sendChat = () => {
 </script>
 
 <template>
-  <div id="chat_container ">
+  <div id="chat_container">
     <div class="grid grid-1 rounded-t-md bg-gray-200 p-5">
       <div v-if="messages.length > 0" v-for="message in messages">
 
@@ -108,7 +108,6 @@ const sendChat = () => {
       <hr class="my-2">
       <span class="text-gray-600 mb-1">Prompt:</span>
       <textarea class="rounded-md" v-model="chat_message" placeholder="write you prompt here..."></textarea>
-
       <primarybutton class="mt-1" @click="sendChat">Send</primarybutton>
     </div>
   </div>

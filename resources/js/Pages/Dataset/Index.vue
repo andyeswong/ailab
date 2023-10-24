@@ -51,7 +51,7 @@ watch(reactive_user, async (newValue, oldValue) => {
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg"
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-md"
                     v-if="reactive_user.datasets != undefined">
                     <div class="p-6 text-gray-900 dark:text-gray-100" v-for="dataset in reactive_user.datasets">
                         <div class="flex">
@@ -72,7 +72,7 @@ watch(reactive_user, async (newValue, oldValue) => {
                     </div>
                 </div>
                 <!-- v-else -->
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg" v-else>
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-md" v-else>
                     <div class="p-6 text-gray-900 dark:text-gray-100">You have no datasets uploaded.
                         <a href="/datasets/create" class="text-blue-500 hover:text-blue-700">Upload  dataset</a> to get
                         started.

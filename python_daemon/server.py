@@ -310,6 +310,10 @@ def prompt():
 
     max_length = int(request.form.get("max_tokens"))
 
+    temperature = float(request.form.get("temperature"))
+
+    print(temperature, max_length)
+
     # if model not found
     if not os.path.exists(model_path):
         res_dict = {
@@ -323,7 +327,7 @@ def prompt():
     model = AutoModelForSeq2SeqLM.from_pretrained(model_path)
 
     prompt = request.form.get("prompt")
-    output = model.generate(**tokenizer(prompt, return_tensors="pt"), max_length=max_length)
+    output = model.generate(**tokenizer(prompt, return_tensors="pt"), max_length=max_length, temperature=temperature)
     completion = tokenizer.decode(output[0], skip_special_tokens=True, clean_up_tokenization_spaces=True)
     # return json response
     res_dict = {"prompt": prompt, "completion": completion}

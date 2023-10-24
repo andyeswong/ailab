@@ -1,14 +1,15 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
+import {Head} from '@inertiajs/vue3';
 import axios from 'axios';
-import { reactive } from 'vue';
-import { ref } from 'vue';
+import {reactive} from 'vue';
+import {ref} from 'vue';
 import chat from '@/Components/ChatBox.vue';
+import ai_console from '@/Components/AIConsole.vue';
 
 const props = defineProps({
-    user: Object,
-    model: Object,
+  user: Object,
+  model: Object,
 });
 
 // const chat = ref('');
@@ -52,58 +53,58 @@ const _model = reactive(props.model);
 // }
 
 
-
-
-
-
 </script>
 
 <template>
-    <Head title="AIModels" />
+  <Head title="AIModels"/>
 
-    <AuthenticatedLayout>
-        <template #header_left>
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">AI models - Explore {{
-                model.model_name }}</h2>
-        </template>
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 grid grid-cols-3">
-
-
+  <AuthenticatedLayout>
+    <template #header_left>
+      <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">AI models - Explore {{
+          model.model_name
+        }}</h2>
+    </template>
+    <div class="py-12">
+      <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 flex">
+          <div class="flex-shrink max-w-sm">
               <chat :model="model"></chat>
+              <hr class="my-2.5">
+              <ai_console  :model="model"></ai_console>
+          </div>
 
-
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 text-gray-900 dark:text-gray-100">
-                        <div class="flex">
-                            <!-- big text area  -->
-                            <div class="flex-grow">
-                                <h3 class="font-semibold text-lg text-gray-800 dark:text-gray-200 leading-tight"
-                                    v-text="model.model_name"></h3>
-                            </div>
-                            <div class="flex-shrink">
-                                <p class="text-gray-600 dark:text-gray-400" v-text="model.model_description"></p>
-                            </div>
-                        </div>
-
-
-                    </div>
-                </div>
+        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-md flex-grow mx-5">
+          <div class="p-6 text-gray-900 dark:text-gray-100">
+            <div class="flex">
+              <!-- big text area  -->
+              <div class="flex-grow">
+                <h3 class="font-semibold text-lg text-gray-800 dark:text-gray-200 leading-tight"
+                    v-text="model.model_name"></h3>
+              </div>
+              <div class="flex-shrink">
+                <p class="text-gray-600 dark:text-gray-400" v-text="model.model_description"></p>
+              </div>
             </div>
+          </div>
         </div>
 
-    </AuthenticatedLayout>
+
+
+
+      </div>
+    </div>
+
+  </AuthenticatedLayout>
 </template>
 
 <style>
 /* we will explain what these classes do next! */
 .v-enter-active,
 .v-leave-active {
-    transition: opacity 0.5s ease;
+  transition: opacity 0.5s ease;
 }
 
 .v-enter-from,
 .v-leave-to {
-    opacity: 0;
+  opacity: 0;
 }
 </style>

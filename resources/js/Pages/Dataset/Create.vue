@@ -90,7 +90,7 @@ const uploadDataset = async () => {
     <div class="py-12">
       <!-- step 1 -->
       <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-md">
           <div class="p-6 text-gray-900 dark:text-gray-100">
             <div class="flex">
               <div class="flex-grow" v-if="dataset_file == null">
@@ -174,14 +174,14 @@ const uploadDataset = async () => {
     <!-- step 2 -->
     <!-- dataset name and run it-->
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mt-5" v-if="dataset_file != null">
-      <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+      <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-md">
         <div class="p-6 text-gray-900 dark:text-gray-100">
           <div class="flex">
             <div class="flex-grow">
               <h3 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight mb-1">Step 2:
                 Dataset name and description</h3>
               <input
-                  class="w-full h-10 pl-3 pr-6 text-base placeholder-gray-600 border rounded-lg appearance-none focus:shadow-outline dark:bg-gray-700 dark:text-gray-200"
+                  class="w-full h-10 pl-3 pr-6 text-base placeholder-gray-600 border rounded-md appearance-none focus:shadow-outline dark:bg-gray-700 dark:text-gray-200"
                   type="text" placeholder="Dataset name" v-model="datasetName" required>
 
             </div>
@@ -190,7 +190,7 @@ const uploadDataset = async () => {
           <div class="flex mt-3">
             <div class="flex-grow">
                             <textarea lines="3"
-                                      class="w-full h-10 pl-3 pr-6 text-base placeholder-gray-600 border rounded-lg appearance-none focus:shadow-outline dark:bg-gray-700 dark:text-gray-200"
+                                      class="w-full h-10 pl-3 pr-6 text-base placeholder-gray-600 border rounded-md appearance-none focus:shadow-outline dark:bg-gray-700 dark:text-gray-200"
                                       type="text" placeholder="Dataset description" v-model="datasetDescription"
                                       required>
                             </textarea>
