@@ -45,6 +45,13 @@ Route::middleware('auth')->group(function () {
         Route::get('/{model}/edit', [ModelController::class, 'edit'])->name('models.edit');
         Route::patch('/{model}', [ModelController::class, 'update'])->name('models.update');
         Route::delete('/{model}', [ModelController::class, 'destroy'])->name('models.destroy');
+
+        Route::get('/{model}/make/public', [ModelController::class, 'makePublic'])->name('models.makePublic');
+        Route::get('/{model}/make/private', [ModelController::class, 'makePrivate'])->name('models.makePrivate');
+
+        Route::get('{model}/follow', [ModelController::class, 'follow'])->name('models.follow');
+        Route::get('{model}/unfollow', [ModelController::class, 'unfollow'])->name('models.unfollow');
+
     });
 
     // group routes for datasets

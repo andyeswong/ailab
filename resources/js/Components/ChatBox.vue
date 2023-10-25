@@ -14,6 +14,7 @@ const chat_temperature = ref(0.5);
 const chat_max_chars = ref(100);
 
 const chat_message = ref('');
+const loading_chat = ref(false);
 
 const sendChat = () => {
   // create message object
@@ -21,6 +22,8 @@ const sendChat = () => {
     prompt: chat_message.value,
     completion: null,
   };
+
+  loading_chat.value = true;
 
   var form_data = new FormData();
   // add breakline to chat
@@ -42,10 +45,16 @@ const sendChat = () => {
         // add message to chat box
         messages.value.push(msg_obj);
         chat_message.value = '';
+        loading_chat.value = false;
+
       })
       .catch(function (error) {
         console.log(error);
       });
+
+    var messages_container = document.getElementById('messages_container');
+    messages_container.scrollTop = messages_container.scrollHeight;
+
 }
 
 
@@ -53,7 +62,7 @@ const sendChat = () => {
 
 <template>
   <div id="chat_container">
-    <div class="grid grid-1 rounded-t-md bg-gray-200 p-5">
+    <div id="messages_container" class="grid grid-1 rounded-t-md bg-gray-200 p-5 max-h-56 overflow-y-auto">
       <div v-if="messages.length > 0" v-for="message in messages">
 
 
@@ -107,8 +116,11 @@ const sendChat = () => {
       </div>
       <hr class="my-2">
       <span class="text-gray-600 mb-1">Prompt:</span>
-      <textarea class="rounded-md" v-model="chat_message" placeholder="write you prompt here..."></textarea>
-      <primarybutton class="mt-1" @click="sendChat">Send</primarybutton>
+      <textarea class="rounded-md" :disabled="loading_chat" v-model="chat_message" placeholder="write you prompt here..."></textarea>
+      <primarybutton :class="loading_chat ? 'mt-1 animate-pulse' : 'mt-1'" @click="sendChat" :disabled="loading_chat">
+          {{ loading_chat ? 'Loading' : 'Send'}}
+      </primarybutton>
+
     </div>
   </div>
 

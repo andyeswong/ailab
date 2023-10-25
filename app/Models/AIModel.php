@@ -14,6 +14,22 @@ class AIModel extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    public function is_owner($user_id)
+    {
+        return $this->user_id == $user_id;
+    }
+
+    public function is_public()
+    {
+        return $this->is_public;
+    }
+
+    public function is_listed()
+    {
+        return $this->is_listed;
+    }
+
+
     public function dataset()
     {
         return $this->belongsTo(DataSet::class, 'data_set_id');

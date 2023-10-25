@@ -14,6 +14,7 @@ import modal from '@/Components/Modal.vue';
 
 const props = defineProps({
     user: Object,
+    followed_models: Array,
 });
 
 const reactive_user = ref(props.user);
@@ -56,16 +57,7 @@ var modelMetricsTrimmer = (model_metrics, length) => {
     }
 }
 
-var modelMetricsLastObject = (model_metrics) => {
-    var metrics = JSON.parse(model_metrics);
-    if (metrics == undefined) {
-        return {};
-    } else if (metrics.length == 0) {
-        return {};
-    }
-    var last_object = metrics[metrics.length - 1];
-    return metrics[metrics.length - 1];
-}
+
 
 var openConsole = (model) => {
     model_console.value = model
@@ -84,8 +76,6 @@ var deleteModel = (model) => {
     if (!confirm('Are you sure you want to delete this model?')) {
         return;
     }
-
-    
 
 
     axios.delete('/models/' + model.id)
@@ -126,7 +116,10 @@ var deleteModel = (model) => {
                 </template>
             </modal>
 
+
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <h1 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Your models</h1>
+                <hr class="my-2.5">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-md"
                      v-if="reactive_user.models != undefined && reactive_user.models.length > 0">
                     <div class="p-6 text-gray-900 dark:text-gray-100" v-for="model in reactive_user.models">
@@ -177,6 +170,62 @@ var deleteModel = (model) => {
                         started.
                     </div>
                 </div>
+                <h1 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight mt-5">Followed models</h1>
+                <hr class="my-2.5">
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-md"
+                     v-if="followed_models != undefined && followed_models.length > 0">
+                    <div class="p-6 text-gray-900 dark:text-gray-100" v-for="model in followed_models">
+                        <div class="flex">
+                            <div class="flex-grow">
+                                <h3 class="font-semibold text-lg text-gray-800 dark:text-gray-200 leading-tight"
+                                    v-text="model.model_name"></h3>
+                                <p class="text-gray-600 dark:text-gray-400" v-text="model.model_description"></p>
+                                <p class="text-gray-600 dark:text-gray-400">
+                                    <!-- tailwind pill  -->
+                                    <span v-if="modelMetricsLastObject(model.model_metrics).train_loss != undefined">
+                                        <pill :left="{text: 'train_loss', color: 'gray-800'}"
+                                              :right="{text: modelMetricsLastObject(model.model_metrics).train_loss, color: 'gray-500'}"></pill>
+
+                  </span>
+                                    <!--                                            author pill-->
+                                    <span>
+                                                <pill :left="{text: 'author', color: 'blue-500'}"
+                                                      :right="{text: model.author.name, color: 'gray-500'}"></pill>
+                                            </span>
+
+                                    <!-- tailwind pill  -->
+                                    <div v-if="model.model_hyperparameters != undefined">
+                                        <pill
+                                            v-for="hyperparameter in hyperParametersToArray(model.model_hyperparameters)"
+                                            :left="{text: hyperparameter.name, color: 'gray-800'}"
+                                            :right="{text: hyperparameter.value, color: 'gray-500'}"></pill>
+                                    </div>
+                                </p>
+                            </div>
+                            <div class="flex-shrink-0">
+                                <secondarybutton class="mr-1" v-if="model.status == 'trained'"
+                                                 @click="goto(`/models/${model.id}`)">
+                                    Explore
+                                </secondarybutton>
+                                <secondarybutton class="mr-1" v-else>
+                                    {{ model.status }}
+                                </secondarybutton>
+                                <primarybutton @click="openConsole(model)">
+                                    Training console
+                                </primarybutton>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- v-else -->
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-md" v-else>
+                    <div class="p-6 text-gray-900 dark:text-gray-100">You are not following any models.
+                        <a href="/dashboard" class="text-blue-500 hover:text-blue-700">Explore models</a> to get
+                        started.
+                    </div>
+                </div>
+
             </div>
         </div>
         <!-- show skeleton or loader -->

@@ -8,6 +8,10 @@ import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
+
+
+
+// define global methods
 const hyperParametersToArray = (json_string) => {
 //      {"epochs":5,"batch_size":5,"learning_rate":0.0005}
     let hyperparameters = JSON.parse(json_string);
@@ -27,10 +31,24 @@ const goback = () => {
     window.history.back();
 }
 
+var modelMetricsLastObject = (model_metrics) => {
+    var metrics = JSON.parse(model_metrics);
+    if (metrics == undefined) {
+        return {};
+    } else if (metrics.length == 0) {
+        return {};
+    }
+    var last_object = metrics[metrics.length - 1];
+    return metrics[metrics.length - 1];
+}
+
+
+// create global methods array
 const methods = {
     goto: goto,
     goback: goback,
     hyperParametersToArray: hyperParametersToArray,
+    modelMetricsLastObject: modelMetricsLastObject,
 }
 
 createInertiaApp({
