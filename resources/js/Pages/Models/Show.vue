@@ -7,6 +7,7 @@ import {ref} from 'vue';
 import chat from '@/Components/ChatBox.vue';
 import ai_console from '@/Components/AIConsole.vue';
 import secondarybutton from "@/Components/SecondaryButton.vue";
+import Modal from "@/Components/Modal.vue";
 
 const props = defineProps({
     user: Object,
@@ -18,7 +19,11 @@ const props = defineProps({
 // const chat = ref('');
 
 const _model = reactive(props.model);
+const expanded_chat = ref(false);
 
+const expandChat = () => {
+    expanded_chat.value = true;
+}
 // add listener for enter key
 // document.addEventListener('keydown', function (event) {
 //     if (event.key === 'Enter') {
@@ -69,14 +74,21 @@ const _model = reactive(props.model);
         </template>
 
         <div class="py-12">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 flex mb-5">
+                <secondarybutton v-if="!expanded_chat" @click="expandChat">Expand chat</secondarybutton>
+                <secondarybutton v-else @click="expanded_chat = false">Collapse chat</secondarybutton>
+            </div>
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 flex">
-                <div class="flex-shrink max-w-sm">
-                    <chat :model="model"></chat>
-                    <hr class="my-2.5">
-                    <ai_console :model="model"></ai_console>
-                </div>
+<!--                left modules-->
+                    <div id="left_container"  :class="expanded_chat ? 'chat_container flex-grow max-w-3xl':'chat_container flex-shrink max-w-sm'">
+                        <chat :model="model"></chat>
+                        <hr class="my-2.5">
+                        <ai_console :model="model"></ai_console>
+                    </div>
 
-                <div>
+
+<!--                rigth modules-->
+                <div id="right_container" :class="'flex-grow'">
                     <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-md flex-grow mx-5">
                         <div id="model_info_container" class="p-6 text-gray-900 dark:text-gray-100 h-full">
                             <div class="flex">
@@ -118,11 +130,31 @@ const _model = reactive(props.model);
                                 </div>
 
                                 <hr class="my-2.5">
-
-
                             </div>
+                        </div>
+                    </div>
 
+<!--                    comments-->
+                    <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-md flex-grow m-5">
+                        <div id="model_comments_container" class="p-6 text-gray-900 dark:text-gray-100 h-full">
+                            <div class="flex">
+                                <div class="flex-grow">
+                                    <h3 class="font-semibold text-lg text-gray-800 dark:text-gray-200 leading-tight"
+                                       >comments</h3> (👷under dev)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
+<!--                    dataset-->
+                    <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-md flex-grow m-5">
+                        <div id="model_dataset_container" class="p-6 text-gray-900 dark:text-gray-100 h-full">
+                            <div class="flex">
+                                <div class="flex-grow">
+                                    <h3 class="font-semibold text-lg text-gray-800 dark:text-gray-200 leading-tight"
+                                    >dataset</h3> (👷under dev)
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -145,5 +177,9 @@ const _model = reactive(props.model);
 .v-enter-from,
 .v-leave-to {
     opacity: 0;
+}
+
+#left_container{
+    transition: all 0.25s ease;
 }
 </style>

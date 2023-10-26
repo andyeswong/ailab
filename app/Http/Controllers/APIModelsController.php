@@ -30,7 +30,7 @@ class APIModelsController extends Controller
 
         $client = new Client();
         // params on form-data epoch, batch_size, learning_rate and file
-        
+
         $data_body = [
             'multipart' => [
                 [
@@ -52,9 +52,14 @@ class APIModelsController extends Controller
                 [
                     'name' => 'user_id',
                     'contents' => $params['user_id']
+                ],
+                [
+                    'name' => 'api_url',
+                    'contents' => env('APP_URL')
                 ]
             ]
         ];
+
 
         $metrics_array = [
             'epochs' => $params['epochs'],
@@ -64,7 +69,7 @@ class APIModelsController extends Controller
 
         $model->model_hyperparameters = json_encode($metrics_array);
 
-        $req = $client->post('http://localhost:5000/api/v1/train', $data_body);
+        $req = $client->post(env('PYTHON_AI_ENGINE_HOST').'/api/v1/train', $data_body);
         $res_body = json_decode($req->getBody()->getContents());
 
         $model->model_token = $res_body->model_token;
@@ -109,6 +114,11 @@ class APIModelsController extends Controller
     public function getModelsByUser($user_id){
         $user = User::find($user_id);
         $user->load('models');
+        $models = $user->models;
+//        load data set
+        foreach ($models as $model){
+            $model->load('dataset');
+        }
         if(!$user){
             return response()->json([
                 'message' => 'user not found'

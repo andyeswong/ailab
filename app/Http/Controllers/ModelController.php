@@ -102,6 +102,11 @@ class ModelController extends Controller
         }
         $model->delete();
 
+//        $client = new \GuzzleHttp\Client();
+//        $response = $client->request('DELETE', env('PYTHON_AI_ENGINE_HOST').'/api/v1/model/'.$model->model_token, [
+//        ]);
+
+
         return redirect()->route('models.index')
             ->with('success', 'Model deleted successfully');
     }

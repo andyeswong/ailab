@@ -21,33 +21,73 @@ const props = defineProps({
 const reactive_user = ref(props.user);
 const model_console = ref({});
 const modal_open = ref(false);
+const own_models = ref(props.own_models);
 
 
 var pusher = new Pusher('c6345026f4a44535826a', {
     cluster: 'us3'
 });
 
+var host = window.location.hostname.replace(/\./g, '');
+var channel_string = host + '_' + props.user.id.toString();
 
-var channel = pusher.subscribe(props.user.id.toString());
+var channel = pusher.subscribe(channel_string);
+var send_status = false;
+var send_update = false;
 
-channel.bind("ai_model", function (data) {
+
+const updateModels = () => {
+    send_update = true;
     axios.get('/api/v1/models/user/' + props.user.id)
         .then(function (response) {
             reactive_user.value = response.data.data;
+            own_models.value = response.data.data.models;
+            send_update = false;
         })
+}
+
+channel.bind("ai_model", function (data) {
+    // update model
+    var model = own_models.value.find(x => x.model_token === data.message.model_token);
+    var obj_model_hyperparameters = JSON.parse(model.model_hyperparameters);
+//     status
+    var new_status = 'Trained epochs: ' + data.message.epoch + '/' + obj_model_hyperparameters.epochs;
+
+    // if data.message.epoch == obj_model_hyperparameters.epochs
+    if (data.message.epoch == obj_model_hyperparameters.epochs) {
+        var form_data = new FormData();
+        form_data.append('status', 'trained');
+        var url = "/api/v1/models/" + model.model_token + "/status";
+        if(!send_status){
+            send_status = true;
+            axios.post(url, form_data)
+                .then(function (response) {
+                    send_status = false;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+
+
+    }
+
+    // if data.message.epoch is int
+    if (Number.isInteger(data.message.epoch)) {
+        if(!send_update) {
+            updateModels();
+        }
+    }
+
+    model.status = new_status;
+    // update model
+    own_models.value = own_models.value.map(x => x.id === model.id ? model : x);
 });
 
-watch(reactive_user, async (newValue, oldValue) => {
-    console.log('reactive_user updated');
-    if (model_console != undefined) {
-        var model = reactive_user.value.models.find(x => x.id === model_console.value.id);
-        model_console.value = model;
-        // fromMetricsToChart(JSON.parse(model.model_metrics));
-    }
+watch(own_models, async (newValue, oldValue) => {
 });
 
 watch(model_console, async (newValue, oldValue) => {
-    console.log('model_console updated');
 });
 
 var modelMetricsTrimmer = (model_metrics, length) => {
@@ -59,10 +99,8 @@ var modelMetricsTrimmer = (model_metrics, length) => {
 }
 
 
-
 var openConsole = (model) => {
     model_console.value = model
-    console.log(model_console.value)
     modal_open.value = true;
 }
 
@@ -80,9 +118,11 @@ var deleteModel = (model) => {
 
 
     axios.delete('/models/' + model.id)
-        .then(function (response) {
-            reactive_user.value = reactive_user.value.filter(x => x.id !== model.id);
+        .then(() => {
+            // reload page
+            location.reload();
         })
+
 }
 
 
@@ -177,7 +217,8 @@ var deleteModel = (model) => {
                         started.
                     </div>
                 </div>
-                <h1 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight mt-5">Followed models</h1>
+                <h1 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight mt-5">Followed
+                    models</h1>
                 <hr class="my-2.5">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-md"
                      v-if="followed_models != undefined && followed_models.length > 0">

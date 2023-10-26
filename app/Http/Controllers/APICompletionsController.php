@@ -23,7 +23,7 @@ class APICompletionsController extends Controller
 
 
         $client = new \GuzzleHttp\Client();
-        $response = $client->request('POST', 'http://localhost:5000/api/v1/prompt', [
+        $response = $client->request('POST', env('PYTHON_AI_ENGINE_HOST').'/api/v1/prompt', [
             'form_params' => $form_params
         ]);
         $body = $response->getBody();
