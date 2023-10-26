@@ -129,7 +129,7 @@ defineProps({
 
 <!--                                            author pill-->
                                             <span>
-                                                <pill :left="{text: 'author', color: 'blue-500'}"
+                                                <pill :left="{text: 'author', color: 'gray-800'}"
                                                       :right="{text: model.author.name, color: 'gray-500'}"></pill>
                                             </span>
 

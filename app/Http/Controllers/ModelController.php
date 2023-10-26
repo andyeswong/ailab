@@ -12,7 +12,8 @@ class ModelController extends Controller
     {
         $user = auth()->user();
         $user->load('models');
-
+        $models = $user->models()->get();
+        $models->load('dataset');
         $followed_models = $user->followedModels()->get();
         $followed_models->load('author');
 
@@ -20,6 +21,7 @@ class ModelController extends Controller
         return Inertia::render('Models/Index', [
             'user' => $user,
             'followed_models' => $followed_models,
+            'own_models' => $models,
         ]);
     }
 

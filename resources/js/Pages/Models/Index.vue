@@ -15,6 +15,7 @@ import modal from '@/Components/Modal.vue';
 const props = defineProps({
     user: Object,
     followed_models: Array,
+    own_models: Array,
 });
 
 const reactive_user = ref(props.user);
@@ -122,7 +123,7 @@ var deleteModel = (model) => {
                 <hr class="my-2.5">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-md"
                      v-if="reactive_user.models != undefined && reactive_user.models.length > 0">
-                    <div class="p-6 text-gray-900 dark:text-gray-100" v-for="model in reactive_user.models">
+                    <div class="p-6 text-gray-900 dark:text-gray-100" v-for="model in own_models">
                         <div class="flex">
                             <div class="flex-grow">
                                 <h3 class="font-semibold text-lg text-gray-800 dark:text-gray-200 leading-tight"
@@ -135,6 +136,12 @@ var deleteModel = (model) => {
                                               :right="{text: modelMetricsLastObject(model.model_metrics).train_loss, color: 'gray-500'}"></pill>
 
                   </span>
+                                    <!--                                            dataset pill-->
+                                    <span>
+                                                <pill :left="{text: 'dataset', color: 'red-800'}"
+                                                      :right="{text: model.dataset.data_set_name, color: 'red-500'}"></pill>
+                                            </span>
+
 
                                     <!-- tailwind pill  -->
                                     <div v-if="model.model_hyperparameters != undefined">
@@ -189,7 +196,7 @@ var deleteModel = (model) => {
                   </span>
                                     <!--                                            author pill-->
                                     <span>
-                                                <pill :left="{text: 'author', color: 'blue-500'}"
+                                                <pill :left="{text: 'author', color: 'gray-800'}"
                                                       :right="{text: model.author.name, color: 'gray-500'}"></pill>
                                             </span>
 

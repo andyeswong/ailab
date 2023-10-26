@@ -118,7 +118,7 @@ class PusherCallback(TrainerCallback):
             "learning_rate": args.learning_rate,
             "model_token": self.model_token,
             "status": "epoch end",
-            "metrics": state.log_history,
+            "metrics": "",
         }
         pusher_client.trigger(self.user_id, 'ai_model', {'message': pusher_message_json})
         data_status_request = {
@@ -146,7 +146,7 @@ class PusherCallback(TrainerCallback):
             "learning_rate": args.learning_rate,
             "model_token": self.model_token,
             "status": "training end",
-            "metrics": state.log_history,
+            "metrics": "",
         }
         pusher_client.trigger(self.user_id, 'ai_model', {'message': pusher_message_json})
 
@@ -328,7 +328,7 @@ def prompt():
 
     prompt = request.form.get("prompt")
     output = model.generate(**tokenizer(prompt, return_tensors="pt"), max_length=max_length, temperature=temperature)
-    completion = tokenizer.decode(output[0], skip_special_tokens=True, clean_up_tokenization_spaces=True)
+    completion = tokenizer.decode(output[0], skip_special_tokens=True, clean_up_tokenization_spaces=True, do_sample=True)
     # return json response
     res_dict = {"prompt": prompt, "completion": completion}
     return jsonify(res_dict)

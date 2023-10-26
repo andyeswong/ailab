@@ -76,54 +76,57 @@ const _model = reactive(props.model);
                     <ai_console :model="model"></ai_console>
                 </div>
 
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-md flex-grow mx-5">
-                    <div id="model_info_container" class="p-6 text-gray-900 dark:text-gray-100 h-full">
-                        <div class="flex">
-                            <div class="flex-grow">
-                                <h3 class="font-semibold text-lg text-gray-800 dark:text-gray-200 leading-tight"
-                                    v-text="model.model_name"></h3>
-                            </div>
-                            <div class="flex-shrink" v-if="is_author">
-                                <secondarybutton v-if="model.is_public == 1"
-                                                 @click="goto('/models/'+model.id+'/make/private')">Make model private
-                                </secondarybutton>
-                                <secondarybutton v-else @click="goto('/models/'+model.id+'/make/public')">Make model
-                                    public
-                                </secondarybutton>
+                <div>
+                    <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-md flex-grow mx-5">
+                        <div id="model_info_container" class="p-6 text-gray-900 dark:text-gray-100 h-full">
+                            <div class="flex">
+                                <div class="flex-grow">
+                                    <h3 class="font-semibold text-lg text-gray-800 dark:text-gray-200 leading-tight"
+                                        v-text="model.model_name"></h3>
+                                </div>
+                                <div class="flex-shrink" v-if="is_author">
+                                    <secondarybutton v-if="model.is_public == 1"
+                                                     @click="goto('/models/'+model.id+'/make/private')">Make model private
+                                    </secondarybutton>
+                                    <secondarybutton v-else @click="goto('/models/'+model.id+'/make/public')">Make model
+                                        public
+                                    </secondarybutton>
 
-                                <!--                                retrain button-->
-                                <secondarybutton class="ml-1" @click="goto('/models/'+model.id+'/retrain')">Retrain
-                                </secondarybutton>
-                            </div>
-                            <div v-else class="flex-shrink">
-                                <!--                                follow button-->
-                                <secondarybutton v-if="is_followed"
-                                                 @click="goto('/models/'+model.id+'/unfollow')">Unfollow
-                                </secondarybutton>
-                                <secondarybutton v-else @click="goto('/models/'+model.id+'/follow')">Follow
-                                </secondarybutton>
+                                    <!--                                retrain button-->
+                                    <secondarybutton class="ml-1" @click="goto('/models/'+model.id+'/retrain')">Retrain
+                                    </secondarybutton>
+                                </div>
+                                <div v-else class="flex-shrink">
+                                    <!--                                follow button-->
+                                    <secondarybutton v-if="is_followed"
+                                                     @click="goto('/models/'+model.id+'/unfollow')">Unfollow
+                                    </secondarybutton>
+                                    <secondarybutton v-else @click="goto('/models/'+model.id+'/follow')">Follow
+                                    </secondarybutton>
 
-<!--                                author button-->
-                                <secondarybutton class="ml-1" @click="goto('/users/'+model.user.id+'/show')">Author
-                                </secondarybutton>
+                                    <!--                                author button-->
+                                    <secondarybutton class="ml-1" @click="goto('/users/'+model.user.id+'/show')">Author
+                                    </secondarybutton>
+                                </div>
                             </div>
-                        </div>
 
-
-                        <hr class="my-2.5">
-                        <div class="flex flex-col">
-                            <div class="flex flex-grow">
-                                <div v-html="model.model_description"></div>
-                            </div>
 
                             <hr class="my-2.5">
+                            <div class="flex flex-col">
+                                <div class="flex flex-grow">
+                                    <div v-html="model.model_description"></div>
+                                </div>
+
+                                <hr class="my-2.5">
+
+
+                            </div>
 
 
                         </div>
-
-
                     </div>
                 </div>
+
 
 
             </div>
