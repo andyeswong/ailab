@@ -6,7 +6,7 @@ use App\Http\Controllers\ModelController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use App\Http\Controllers\DataSetController;
+use App\Http\Controllers\DatasetController as DataSetController;
 
 /*
 |--------------------------------------------------------------------------
