@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use ElephantIO\Engine\SocketIO\Version2X;
 use Illuminate\Http\Request;
-use Inertia\Inertia; 
+use Inertia\Inertia;
 use App\Models\DataSet;
+use App\Http\Controllers\Helpers\SocketIOClient;
 
 class DatasetController extends Controller
 {
@@ -12,7 +14,7 @@ class DatasetController extends Controller
     {
         $user = auth()->user();
         $user->load('datasets');
-        
+
         // inertia render
         return Inertia::render('Dataset/Index', [
             'user' => $user,
@@ -32,16 +34,12 @@ class DatasetController extends Controller
         $request->validate([
             'data_set_name' => 'required',
             'user_id' => 'required',
-            'file' => 'required',
+            'dataset_file_path' => 'required',
             'data_set_description' => 'required',
         ]);
 
-        if($request->hasFile('file')){
-            // store file in storage/app/public/datasets filename
-            $dataset_path = $request->file('file')->store('datasets');
-            $request->merge(['data_set_path' => $dataset_path]);
-        }
-
+        $file_path = $request->dataset_file_path;
+        $request->merge(['data_set_path' => $file_path]);
 
         DataSet::create($request->all());
 
@@ -68,10 +66,10 @@ class DatasetController extends Controller
             'is_public' => 'required',
         ]);
 
-        if($request->hasFile('dataset_path')){
+        if ($request->hasFile('dataset_path')) {
             $dataset_path = $request->file('dataset_path')->store('datasets');
             $request->merge(['dataset_path' => $dataset_path]);
-        }else{
+        } else {
             $request->merge(['dataset_path' => $dataset->dataset_path]);
         }
 

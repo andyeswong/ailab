@@ -15,6 +15,42 @@ const dataset_file = ref(null);
 const datasetName = ref(null);
 const datasetDescription = ref(null);
 
+const socket = io(window.api_host, {
+  transports: ['websocket'],
+  upgrade: true,
+  reconnection: true,
+  reconnectionDelay: 1000,
+  reconnectionDelayMax: 5000,
+  reconnectionAttempts: Infinity
+});
+
+var host = window.location.hostname;
+var channel_string = host + '_' + props.user.id.toString();
+
+// when the file itself is uploaded, then the socket will emit the file name and path
+socket.on(channel_string+'_file_upload', (data) => {
+    datasetName.value = data.file_name;
+    dataset_file.value = data.file_path;
+});
+
+const sendFileToSocket = (dataset_file) => {
+    //   read the file
+    const reader = new FileReader();
+//     read file as text
+    reader.readAsText(dataset_file);
+//     when file is loaded
+    reader.onload = function (e) {
+        var file_obj = {
+            file_name: dataset_file.name,
+            file_type: dataset_file.type,
+            file_size: dataset_file.size,
+            file_content: e.target.result,
+            channel : channel_string
+        }
+        socket.emit('file_upload', file_obj);
+    }
+
+}
 
 const onFileChange = (e) => {
   // max size 100mb
@@ -22,8 +58,7 @@ const onFileChange = (e) => {
     alert('File too large. Max size is 100mb');
     return;
   }
-
-  dataset_file.value = e.target.files[0];
+  sendFileToSocket(e.target.files[0]);
 }
 
 const onFileDrop = (e) => {
@@ -35,12 +70,7 @@ const onFileDrop = (e) => {
     return;
   }
 
-  // file type must be csv
-  if (e.dataTransfer.files[0].type != 'text/csv') {
-    alert('File must be csv');
-    return;
-  }
-  dataset_file.value = e.dataTransfer.files[0];
+    sendFileToSocket(e.dataTransfer.files[0]);
 }
 
 const uploadDataset = async () => {
@@ -59,9 +89,10 @@ const uploadDataset = async () => {
     return;
   }
 
+
   // upload file
   const formData = new FormData();
-  formData.append('file', dataset_file.value);
+  formData.append('dataset_file_path', dataset_file.value);
   formData.append('data_set_name', datasetName.value);
   formData.append('user_id', reactive_user.value.id);
   formData.append('data_set_description', datasetDescription.value);
@@ -140,7 +171,7 @@ const uploadDataset = async () => {
                     <div class="text-center">
                       <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100"
                           id="modal-title">
-                        {{ dataset_file.name }}
+                        {{ datasetName }}
                       </h3>
                       <!-- Drag and drop file here text -->
 

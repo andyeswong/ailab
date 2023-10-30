@@ -4,6 +4,7 @@ from transformers.training_args import TrainingArguments
 from werkzeug.utils import secure_filename
 import os
 import json
+from flask_socketio import SocketIO, emit
 
 from transformers import (
     AutoTokenizer,
@@ -35,6 +36,49 @@ pusher_client = pusher.Pusher(
     cluster='us3',
     ssl=True
 )
+
+socketio = SocketIO(app, cors_allowed_origins="*")
+
+
+@socketio.on('connect')
+def handle_connect():
+    print('connected')
+
+
+@socketio.on('file_upload')
+def handle_file_upload(data):
+    file_name = data['file_name']
+    file_content = data['file_content']
+    #     store file in ../storage/app/datasets
+    if os.name == "nt":
+        file = "..\\storage\\app\\datasets\\" + file_name
+    else:
+        file = "../storage/app/datasets/" + file_name
+    with open(file, 'w') as f:
+        f.write(file_content)
+    channel = data['channel'] + '_file_upload'
+
+    message_to_emmit = {'file_path': file, 'file_name': file_name}
+
+    socketio.emit(channel, message_to_emmit)
+    print(channel)
+    print('file uploaded')
+
+
+@socketio.on('test')
+def test():
+    print('test')
+
+
+#     on any
+@socketio.on('message')
+def handle_message(data):
+    print('received message: ' + data)
+
+
+@socketio.on('event')
+def handle_event(data):
+    print('received event: ' + data)
 
 
 def VerifyQueueAndRunning():
@@ -101,7 +145,7 @@ def CreateAndAddToRunning(params):
 
 
 def RemoveFromRunning(token):
-#     get running
+    #     get running
     queue, running = VerifyQueueAndRunning()
     #     remove task from running
 
@@ -193,7 +237,7 @@ class PusherCallback(TrainerCallback):
             "metrics": "",
         }
 
-#         if epoch it's divisible by 1
+        #         if epoch it's divisible by 1
         if state.epoch % 1 == 0:
             pusher_channel = self.api_url + '_' + self.user_id
             #         remove http:// or https:// and . from url
@@ -238,7 +282,6 @@ class PusherCallback(TrainerCallback):
 
 
 def train(file, epoch, batch_size, learning_rate, random_filename, user_id, api_url):
-
     #     add to running
     CreateAndAddToRunning({
         "epoch": epoch,
@@ -248,8 +291,8 @@ def train(file, epoch, batch_size, learning_rate, random_filename, user_id, api_
         "model_token": random_filename,
         "user_id": user_id,
         "api_url": api_url,
+        "status": "running"
     })
-
 
     # Load the SQLcoder tokenizer and model
     train_base_checkpoint = "t5-small"
@@ -357,10 +400,7 @@ def train_model():
     # if linux
     # file = "../../storage/app/public/"+request.form.get("file")
 
-    if os.name == "nt":
-        file = "..\\storage\\app\\" + request.form.get("file")
-    else:
-        file = "../storage/app/" + request.form.get("file")
+    file = request.form.get("file")
     # convert from path to file
     # file name its last part of path
     filename = file.split("/")[-1]
@@ -390,6 +430,7 @@ def train_model():
                 "model_token": random_filename,
                 "user_id": user_id,
                 "api_url": api_url,
+                "status": "added to queue"
             })
             res_dict = {
                 "epoch": epoch,
@@ -431,6 +472,30 @@ def train_model():
     else:
         return jsonify({"status": "failed", "message": "no file uploaded"})
 
+@app.route("/api/v1/models/<model_token>/status", methods=["POST"])
+def model_status(model_token):
+    # method options retuern cors headers
+    if request.method == "OPTIONS":
+        return jsonify({"status": "success"})
+    # model path
+    model_base_path = "./models/" + model_token
+    model_path = model_base_path + "/model"
+    tokenizer_path = model_base_path + "/tokenizer"
+    # if model not found
+    if not os.path.exists(model_path):
+        res_dict = {
+            "model_token": model_base_path,
+            "status": "failed",
+            "message": "model not found",
+        }
+        return jsonify(res_dict)
+    status = request.form.get("status")
+    metrics = request.form.get("metrics")
+    # return json response
+    res_dict = {"model_token": model_token, "status": status, "metrics": metrics}
+    return jsonify(res_dict)
+
+
 
 @app.route("/api/v1/prompt", methods=["GET", "POST"])
 def prompt():
@@ -448,10 +513,9 @@ def prompt():
 
     # temperature its a float value between 0 and 1 that represents the randomness of the generated text
     temperature = float(request.form.get("temperature"))
-#     fi temperature is 0.0 then set to 0.1
+    #     fi temperature is 0.0 then set to 0.1
     if temperature == 0.0:
         temperature = 0.1
-
 
     # if model not found
     if not os.path.exists(model_path):
@@ -496,4 +560,5 @@ def delete_model(model_token):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    # app.run(debug=True,host='192.168.35.35', port=5000)
+    socketio.run(app, debug=True, host='192.168.35.35', port=5000)
