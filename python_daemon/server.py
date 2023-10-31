@@ -560,5 +560,5 @@ def delete_model(model_token):
 
 
 if __name__ == "__main__":
-    # app.run(debug=True,host='192.168.35.35', port=5000)
-    socketio.run(app, debug=True, host='192.168.35.35', port=5000)
+    #app.run(    host='192.168.35.35', port=8080)
+    socketio.run(app, debug=True, host='0.0.0.0', port=8080)
