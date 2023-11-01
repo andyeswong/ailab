@@ -74,7 +74,7 @@ model_integration_code.value = 'const axios = require(\'axios\');\n' +
     'let config = {\n' +
     '  method: \'post\',\n' +
     '  maxBodyLength: Infinity,\n' +
-    '  url: \''+window.location.protocol+'//'+window.location.host+'/api/v1/integrations/prompt/\'' + _model.model_token + ',\n' +
+    '  url: \''+window.location.protocol+'//'+window.location.host+'/api/v1/integrations/prompt/' + _model.model_token + '\',\n' +
     '  data : data\n' +
     '};\n' +
     '\n' +
