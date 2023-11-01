@@ -18,9 +18,16 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
+
+        $api_tokens = $request->user()->apiTokens;
+        $models = $request->user()->models;
+        $followed_models = $request->user()->followedModels;
         return Inertia::render('Profile/Edit', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
+            'api_tokens' => $api_tokens,
+            'models' => $models,
+            'followed_models' => $followed_models
         ]);
     }
 

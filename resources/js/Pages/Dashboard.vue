@@ -143,10 +143,20 @@ defineProps({
                                         </p>
                                     </div>
                                     <div class="flex-shrink">
-                                        <!-- button to go -->
-                                        <primarybutton @click="goto(`/models/${model.id}`)">
-                                            Explore
-                                        </primarybutton>
+                                        <div class="flex flex-col h-full">
+                                            <div class="flex-grow">
+                                                <!-- button to go -->
+                                                <primarybutton @click="goto(`/models/${model.id}`)">
+                                                    Explore
+                                                </primarybutton>
+                                            </div>
+                                            <div class="flex-shrink">
+                                                <span class="text-gray-600 dark:text-gray-400">Followers</span>
+                                                {{model.followers.length}}
+                                            </div>
+
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>

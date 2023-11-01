@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\APITokensController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\APIModelsController;
@@ -24,22 +25,34 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 Route::prefix('v1')->group(function () {
     // group of routes for models
     Route::prefix('models')->group(function () {
-        Route::post('/',[APIModelsController::class, 'store']);
-        Route::post('/{model_token}/status',[APIModelsController::class, 'updateStatus']);
-        Route::get('/{model_token}/metrics',[APIModelsController::class, 'getMetrics']);
-        Route::get('/user/{user_id}',[APIModelsController::class, 'getModelsByUser']);
+        Route::post('/', [APIModelsController::class, 'store']);
+        Route::post('/{model_token}/status', [APIModelsController::class, 'updateStatus']);
+        Route::get('/{model_token}/metrics', [APIModelsController::class, 'getMetrics']);
+        Route::get('/user/{user_id}', [APIModelsController::class, 'getModelsByUser']);
     });
 
     Route::prefix('completions')->group(function () {
-        Route::post('/',[APICompletionsController::class, 'store']);
-        Route::get('/{model_token}',[APICompletionsController::class, 'getCompletionByModel']);
-        Route::post('/{model_token}',[APICompletionsController::class, 'getCompletionByModel']);
+        Route::post('/', [APICompletionsController::class, 'store']);
+        Route::get('/{model_token}', [APICompletionsController::class, 'getCompletionByModel']);
+        Route::post('/{model_token}', [APICompletionsController::class, 'getCompletionByModel']);
+
+
     });
+
+    Route::prefix('integrations')->group(function () {
+        Route::post('/prompt/{model_token}', [APICompletionsController::class, 'getCompletionByModelPublic']);
+        Route::get('/prompt/{model_token}', [APICompletionsController::class, 'getCompletionByModelPublic']);
+    });
+
 
     // group of routes for datasets
     Route::prefix('datasets')->group(function () {
-        Route::post('/',[APIDataSetsController::class, 'store']);
-        Route::get('/user/{user_id}',[APIDataSetsController::class, 'getDataSetsByUser']);
+        Route::post('/', [APIDataSetsController::class, 'store']);
+        Route::get('/user/{user_id}', [APIDataSetsController::class, 'getDataSetsByUser']);
+    });
+
+    Route::prefix('api-tokens')->group(function () {
+        Route::post('/', [APITokensController::class, 'store']);
     });
 
 });

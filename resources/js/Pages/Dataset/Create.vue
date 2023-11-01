@@ -171,7 +171,7 @@ const uploadDataset = async () => {
                     <div class="text-center">
                       <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100"
                           id="modal-title">
-                        {{ datasetName }}
+                        {{ dataset_file.split('/').pop() }}
                       </h3>
                       <!-- Drag and drop file here text -->
 

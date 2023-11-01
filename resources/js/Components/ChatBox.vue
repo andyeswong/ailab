@@ -57,25 +57,30 @@ const sendChat = () => {
 
 }
 
+const reAsk = (prompt) => {
+  chat_message.value = prompt;
+}
+
 
 </script>
 
 <template>
   <div id="chat_container">
-    <div id="messages_container" class="grid grid-1 rounded-t-md bg-gray-200 p-5 max-h-56 overflow-y-auto">
+    <div id="messages_container" class="grid grid-1 rounded-t-md bg-gray-200 p-5 max-h-56 overflow-y-auto dark:bg-gray-800">
       <div v-if="messages.length > 0" v-for="message in messages">
 
 
         <div class="text-start mb-5">
-          <div v-if="message.prompt != null" class="bg-gray-700 p-3 rounded-t-md rounded-br-md">
+          <div v-if="message.prompt != null" class="bg-gray-700 p-3 rounded-t-md rounded-br-md ">
             <span class="text-white">{{ message.prompt }}</span>
           </div>
-          <span class="text-gray-500">you</span>
+          <span class="text-gray-500">you</span>  - <button
+            class="text-gray-800 hover:text-gray-400 dark:text-white" @click="reAsk(message.prompt)">re-ask</button>
         </div>
 
 
         <div class="text-end">
-          <div v-if="message.completion != null" class="bg-white p-3 rounded-t-md rounded-bl-md text-end">
+          <div v-if="message.completion != null" class="bg-white dark:bg-gray-200 p-3 rounded-t-md rounded-bl-md text-end">
             <span class="text-gray-800">{{ message.completion }}</span>
           </div>
           <span class="text-gray-500">{{ model.model_name }}</span>
@@ -92,14 +97,14 @@ const sendChat = () => {
 
 
         <div class="text-end">
-          <div class="bg-white p-3 rounded-t-md rounded-bl-md text-end">
+          <div class="bg-white dark:bg-gray-200 p-3 rounded-t-md rounded-bl-md text-end">
             <span class="text-gray-800">...</span>
           </div>
           <span class="text-gray-500">{{ model.model_name }}</span>
         </div>
       </div>
     </div>
-    <div class="grid grid-cols-1 rounded-b-md bg-white p-5">
+    <div class="grid grid-cols-1 rounded-b-md bg-white dark:bg-gray-700 p-5">
       <span class="text-gray-600">{{ model.model_name }} params:</span>
       <div class="grid grid-cols-2 mt-1">
         <!--        sliders for temperature and max chars-->

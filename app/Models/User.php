@@ -62,5 +62,17 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(AIModel::class, 'model_users', 'user_id', 'model_id');
     }
-    
+
+    public function apiTokens()
+    {
+        return $this->hasMany(ApiToken::class, 'user_id');
+    }
+
+    public function OwnerOrFollowed($model)
+    {
+        $owner = $model->user_id == $this->id;
+        $followed = $this->followedModels()->where('model_id', $model->id)->first();
+        return $owner || $followed;
+    }
+
 }

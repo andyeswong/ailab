@@ -20,6 +20,7 @@ const props = defineProps({
 
 const _model = reactive(props.model);
 const expanded_chat = ref(false);
+const integration_code_modal = ref(false);
 
 const expandChat = () => {
     expanded_chat.value = true;
@@ -60,6 +61,31 @@ const expandChat = () => {
 //         });
 // }
 
+const model_integration_code = ref('');
+model_integration_code.value = 'const axios = require(\'axios\');\n' +
+    'const FormData = require(\'form-data\');\n\n' +
+    'let data = new FormData();\n\n' +
+    'data.append(\'api_token\', \'{api_token}\');\n\n' +
+
+    'data.append(\'prompt\', \'hi, show me reports\');\n\n' +
+    'data.append(\'temperature\', \'0.1\');\n' +
+    'data.append(\'max_tokens\', \'256\');\n' +
+    '\n' +
+    'let config = {\n' +
+    '  method: \'post\',\n' +
+    '  maxBodyLength: Infinity,\n' +
+    '  url: \''+window.location.protocol+'//'+window.location.host+'/api/v1/integrations/prompt/\'' + _model.model_token + ',\n' +
+    '  data : data\n' +
+    '};\n' +
+    '\n' +
+    'axios.request(config)\n' +
+    '.then((response) => {\n' +
+    '  console.log(JSON.stringify(response.data));\n' +
+    '})\n' +
+    '.catch((error) => {\n' +
+    '  console.log(error);\n' +
+    '});\n'
+
 
 </script>
 
@@ -73,10 +99,43 @@ const expandChat = () => {
                 }}</h2>
         </template>
 
+        <modal :show="integration_code_modal" :closeable="true" @close="integration_code_modal = false">
+            <template #header>
+                <h3 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                    Integration code
+                </h3>
+            </template>
+            <template #body>
+                <div class="flex flex-col">
+                    <div class="flex flex-grow">
+                        <div class="flex-grow">
+                            <p class="text-gray-600 dark:text-gray-400">
+                                Copy and paste the following code into your project to integrate this model.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex flex-grow">
+                        <div class="flex-grow">
+                            <textarea class="w-full h-64 rounded-md coding inverse-toggle p-5 text-gray-100 text-sm font-mono subpixel-antialiased
+              bg-gray-800  pb-6 leading-normal overflow-auto max-h-56 " v-model="model_integration_code" readonly>
+                            </textarea>
+                        </div>
+                    </div>
+
+                    <span class="text-gray-600 dark:text-gray-400">
+                        Replace {api_token} with your api token. get your api token <a href="/profile"><strong>here</strong></a>
+                    </span>
+                </div>
+            </template>
+        </modal>
+
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 flex mb-5">
                 <secondarybutton v-if="!expanded_chat" @click="expandChat">Expand chat</secondarybutton>
                 <secondarybutton v-else @click="expanded_chat = false">Collapse chat</secondarybutton>
+
+                <secondarybutton class="ml-1" v-if="integration_code_modal" @click="integration_code_modal = false">Hide {}</secondarybutton>
+                <secondarybutton class="ml-1" v-else @click="integration_code_modal = true">Show {}</secondarybutton>
             </div>
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 flex">
 <!--                left modules-->
@@ -181,5 +240,14 @@ const expandChat = () => {
 
 #left_container{
     transition: all 0.25s ease;
+}
+
+.coding {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    tab-size: 4;
+    white-space: pre-wrap;
+    word-break: break-all;
 }
 </style>
