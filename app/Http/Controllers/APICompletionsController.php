@@ -85,7 +85,7 @@ class APICompletionsController extends Controller
                 'message' => 'Model is not authorized for this API Token'
             ], 403);
         }
-        
+
         $form_params = [
             'prompt' => $prompt,
             'max_tokens' => $max_tokens,
