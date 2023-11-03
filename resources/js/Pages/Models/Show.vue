@@ -25,41 +25,6 @@ const integration_code_modal = ref(false);
 const expandChat = () => {
     expanded_chat.value = true;
 }
-// add listener for enter key
-// document.addEventListener('keydown', function (event) {
-//     if (event.key === 'Enter') {
-//         // if chat-textarea is focused
-//         if (document.activeElement.id === 'chat-textarea'){
-//             event.preventDefault();
-//             sendChat();
-//         }
-//     }
-// });
-
-// const sendChat = () => {
-//     var form_data = new FormData();
-//     // add breakline to chat
-//     chat.value += '\n';
-//     form_data.append('prompt', chat.value);
-//     form_data.append('model_token', _model.model_token);
-//
-//     axios.post('http://localhost:5000/api/v1/prompt', form_data, {
-//             headers: {
-//                 'Content-Type': 'multipart/form-data'
-//             }
-//         })
-//         .then(function (response) {
-//             console.log(response);
-//             const completion = response.data.completion;
-//             // add completion to chat
-//             chat.value += _model.model_name + ": " +completion;
-//             chat.value += '\n';
-//
-//         })
-//         .catch(function (error) {
-//             console.log(error);
-//         });
-// }
 
 const model_integration_code = ref('');
 model_integration_code.value = 'const axios = require(\'axios\');\n' +

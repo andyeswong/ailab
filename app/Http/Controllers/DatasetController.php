@@ -49,7 +49,11 @@ class DatasetController extends Controller
 
     public function show(DataSet $dataset)
     {
-        return view('datasets.show', compact('dataset'));
+        $user = auth()->user();
+        return Inertia::render('Dataset/Show', [
+            'dataset' => $dataset,
+            'user' => $user,
+        ]);
     }
 
     public function edit(DataSet $dataset)

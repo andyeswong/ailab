@@ -3,7 +3,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import {Head} from '@inertiajs/vue3';
 import axios from 'axios';
 import {ref} from 'vue';
-import {defineProps, watch, reactive} from 'vue';
+import {defineProps, watch, reactive, computed} from 'vue';
 import pill from '@/Components/Pill.vue';
 import primarybutton from '@/Components/PrimaryButton.vue';
 import secondarybutton from '@/Components/SecondaryButton.vue';
@@ -16,12 +16,32 @@ const props = defineProps({
     user: Object,
     followed_models: Array,
     own_models: Array,
+    data_sets: Array,
 });
 
 const reactive_user = ref(props.user);
 const model_console = ref({});
 const modal_open = ref(false);
 const own_models = ref(props.own_models);
+const filter_open = ref(false);
+const filter = ref(null);
+const filter_value = ref(null);
+const own_models_to_show = ref(props.own_models);
+
+const filterStatusOptions = [
+    {text: 'Trained', value: 'trained'},
+    {text: 'Training', value: 'training'},
+    {text: 'Failed', value: 'failed'},
+    {text: 'Pending', value: 'pending'},
+];
+
+const filterDatasetOptions = computed(() => {
+    var options = [];
+    props.data_sets.forEach(data_set => {
+        options.push({text: data_set.data_set_name, value: data_set.data_set_name});
+    });
+    return options;
+});
 
 
 var pusher = new Pusher('c6345026f4a44535826a', {
@@ -108,6 +128,14 @@ var closeConsole = () => {
     modal_open.value = false;
 }
 
+const closeFilters = () => {
+    filter_open.value = false;
+}
+
+const openFilters = () => {
+    filter_open.value = true;
+}
+
 
 var deleteModel = (model) => {
 
@@ -123,6 +151,28 @@ var deleteModel = (model) => {
             location.reload();
         })
 
+}
+
+
+const filterModels = () =>{
+    var filter_to_apply = filter.value;
+    var value = filter_value.value;
+    var filtered_models = [];
+    if(filter_to_apply == 'status'){
+        filtered_models = own_models.value.filter(model => model.status == value);
+    }else if(filter_to_apply == 'dataset'){
+        filtered_models = own_models.value.filter(model => model.dataset.data_set_name == value);
+    }
+
+    own_models_to_show.value = filtered_models;
+    closeFilters();
+
+}
+
+const clearFilters = () =>{
+    own_models_to_show.value = own_models.value;
+    filter.value = null;
+    closeFilters();
 }
 
 
@@ -153,17 +203,46 @@ var deleteModel = (model) => {
                 </template>
                 <template #body>
                     <ai_console :model="model_console"></ai_console>
+                </template>
+            </modal>
 
+            <modal :show="filter_open" @close="closeFilters()">
+                <template #header>
+                    filters
+                </template>
+
+                <template #body>
+                    <select v-model="filter" class="form-select mt-1 block w-full rounded-md">
+                        <option value="status">Status</option>
+                        <option value="dataset">Dataset</option>
+                    </select>
+
+                    <select v-model="filter_value" class="form-select mt-1 block w-full rounded-md">
+                        <option v-if="filter == 'status'" v-for="option in filterStatusOptions" :value="option.value">{{ option.text }}</option>
+                        <option v-if="filter == 'dataset'" v-for="option in filterDatasetOptions" :value="option.value">{{ option.text }}</option>
+                    </select>
+
+                    <primarybutton class="mt-6" @click="filterModels()">Apply</primarybutton>
                 </template>
             </modal>
 
 
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <h1 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Your models</h1>
+                <div class="flex">
+                    <div class="flex-grow">
+                        <h1 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Your models</h1>
+                    </div>
+                    <div class="flex-shrink">
+                        <secondarybutton class="mr-1" v-if="filter !== null" @click="clearFilters()">Clear filters</secondarybutton>
+                        <secondarybutton @click="openFilters()">
+                            {{ filter !== null ? 'Filters: ' + filter + ' = ' + filter_value : 'Filters'}}
+                        </secondarybutton>
+                    </div>
+                </div>
                 <hr class="my-2.5">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-md"
-                     v-if="reactive_user.models != undefined && reactive_user.models.length > 0">
-                    <div class="p-6 text-gray-900 dark:text-gray-100" v-for="model in own_models">
+                     v-if="own_models_to_show != undefined && own_models_to_show.length > 0">
+                    <div class="p-6 text-gray-900 dark:text-gray-100" v-for="model in own_models_to_show">
                         <div class="flex">
                             <div class="flex-grow">
                                 <h3 class="font-semibold text-lg text-gray-800 dark:text-gray-200 leading-tight"

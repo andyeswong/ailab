@@ -16,6 +16,18 @@ const chat_max_chars = ref(100);
 const chat_message = ref('');
 const loading_chat = ref(false);
 
+
+// add listener for enter key
+document.addEventListener('keydown', function (event) {
+    if (event.key === 'Enter') {
+        // if chat-textarea is focused
+        if (document.activeElement.id === 'chat-textarea'){
+            event.preventDefault();
+            sendChat();
+        }
+    }
+});
+
 const sendChat = () => {
   // create message object
   var msg_obj = {
@@ -121,7 +133,7 @@ const reAsk = (prompt) => {
       </div>
       <hr class="my-2">
       <span class="text-gray-600 mb-1">Prompt:</span>
-      <textarea class="rounded-md" :disabled="loading_chat" v-model="chat_message" placeholder="write you prompt here..."></textarea>
+      <textarea id="chat-textarea" class="rounded-md" :disabled="loading_chat" v-model="chat_message" placeholder="write you prompt here..."></textarea>
       <primarybutton :class="loading_chat ? 'mt-1 animate-pulse' : 'mt-1'" @click="sendChat" :disabled="loading_chat">
           {{ loading_chat ? 'Loading' : 'Send'}}
       </primarybutton>

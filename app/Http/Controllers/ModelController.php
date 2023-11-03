@@ -17,11 +17,14 @@ class ModelController extends Controller
         $followed_models = $user->followedModels()->get();
         $followed_models->load('author');
 
+        $data_sets = $user->dataSets()->get();
+
         // inertia render
         return Inertia::render('Models/Index', [
             'user' => $user,
             'followed_models' => $followed_models,
             'own_models' => $models,
+            'data_sets' => $data_sets,
         ]);
     }
 
