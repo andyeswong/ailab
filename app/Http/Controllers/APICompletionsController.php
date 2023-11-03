@@ -75,6 +75,17 @@ class APICompletionsController extends Controller
             ], 403);
         }
 
+
+        $api_token_authorized_models = $api_token_model->models;
+        $api_token_authorized_models = json_decode($api_token_authorized_models);
+
+//        if model.token not in api_token_authorized_models
+        if(!in_array($model_token, $api_token_authorized_models)){
+            return response()->json([
+                'message' => 'Model is not authorized for this API Token'
+            ], 403);
+        }
+        
         $form_params = [
             'prompt' => $prompt,
             'max_tokens' => $max_tokens,
