@@ -64,12 +64,21 @@ class ModelController extends Controller
         $is_author = $model->is_owner($user->id);
         $is_followed = $user->followedModels()->where('model_id', $model->id)->count() > 0;
 
+        if($is_author){
+            $model->load('dataset');
+            $dataset = $model->dataset;
+        }else{
+            $model->dataset = null;
+            $dataset = ['data_set_name' => 'Private', 'data_set_description' => 'Private', 'data_set_path' => 'Private'];
+        }
+
 
        return Inertia::render('Models/Show', [
             'model' => $model,
             'user' => $user,
             'is_author' => $is_author,
             'is_followed' => $is_followed,
+            'dataset' => $dataset,
         ]);
     }
 

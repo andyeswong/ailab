@@ -8,12 +8,14 @@ import chat from '@/Components/ChatBox.vue';
 import ai_console from '@/Components/AIConsole.vue';
 import secondarybutton from "@/Components/SecondaryButton.vue";
 import Modal from "@/Components/Modal.vue";
+import CsvEditor from "@/Components/CsvEditor.vue";
 
 const props = defineProps({
     user: Object,
     model: Object,
     is_author: Boolean,
     is_followed: Boolean,
+    dataset: Object,
 });
 
 // const chat = ref('');
@@ -50,6 +52,68 @@ model_integration_code.value = 'const axios = require(\'axios\');\n' +
     '.catch((error) => {\n' +
     '  console.log(error);\n' +
     '});\n'
+
+
+
+
+
+const socket = io(window.api_host, {
+    transports: ['websocket'],
+    upgrade: true,
+    reconnection: true,
+    reconnectionDelay: 1000,
+    reconnectionDelayMax: 5000,
+    reconnectionAttempts: Infinity
+});
+
+const csv_data = ref('');
+const loading_data = ref(false);
+
+
+var host = window.location.hostname;
+var channel_string = host + '_' + props.user.id.toString();
+
+// when the file itself is uploaded, then the socket will emit the file name and path
+socket.on(channel_string+'_file_download', (data) => {
+    csv_data.value = data.file_content;
+});
+
+socket.on(channel_string+'_file_update', (data) => {
+    window.location.reload();
+});
+
+
+//get csv file from engine through socket
+const requestFile = () =>{
+    var path = props.dataset.data_set_path;
+    var file_obj = {
+        file_path: path,
+        channel : channel_string
+    }
+    socket.emit('file_download', file_obj);
+}
+
+const updateFile = (content) => {
+    console.log(content);
+    loading_data.value = true;
+    var path = props.dataset.data_set_path;
+    var file_obj = {
+        file_path: path,
+        channel : channel_string,
+        file_content: content
+    }
+    socket.emit('file_update', file_obj);
+}
+
+if(props.is_author){
+    setTimeout(() => {
+        requestFile();
+    }, 1000);
+}
+
+
+
+
 
 
 </script>
@@ -171,12 +235,22 @@ model_integration_code.value = 'const axios = require(\'axios\');\n' +
                     </div>
 
 <!--                    dataset-->
-                    <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-md flex-grow m-5">
-                        <div id="model_dataset_container" class="p-6 text-gray-900 dark:text-gray-100 h-full">
-                            <div class="flex">
+                    <div  v-if="is_author" class=" max-w-4xl bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-md flex-grow m-5">
+                        <div id="model_dataset_container" class="p-6 text-gray-900 dark:text-gray-100 ">
+                            <div class="flex mb-3">
                                 <div class="flex-grow">
                                     <h3 class="font-semibold text-lg text-gray-800 dark:text-gray-200 leading-tight"
-                                    >dataset</h3> (👷under dev)
+                                    >Dataset</h3>
+                                </div>
+                                <div class="flex-shrink">
+                                    <secondarybutton @click="goto('/datasets/'+dataset.id)">Edit dataset</secondarybutton>
+                                </div>
+                            </div>
+
+                            <div class="flex  max-h-96 overflow-y-auto">
+
+                                <div class="flex-grow">
+                                    <csv-editor :edit="false" :csvcontent="csv_data" v-on:update:csvcontent="updateFile"></csv-editor>
                                 </div>
                             </div>
                         </div>

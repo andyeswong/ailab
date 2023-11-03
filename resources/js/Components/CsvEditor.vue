@@ -7,6 +7,7 @@ import SecondaryButton from "@/Components/SecondaryButton.vue";
 
 const props = defineProps({
     csvcontent: String,
+    edit: Boolean,
 });
 
 
@@ -57,6 +58,8 @@ const parseCSV = () => {
     }
     // remove first element
     result.shift();
+
+
     json_data.value = result;
     data_loaded.value = true;
 }
@@ -74,6 +77,9 @@ const closeEditModal = () => {
 }
 
 const editRow = (col) => {
+    if(!props.edit){
+        return;
+    }
     var row = json_data.value.find(item => item.col === col);
     row_to_edit.value = row;
     edit_modal_open.value = true;
@@ -125,34 +131,38 @@ const saveChanges = () => {
 
 }
 
+if(props.edit){
 
 // listen for ctrl + s
-window.addEventListener("keydown", function (event) {
-    if (event.ctrlKey && event.key === 's') {
-        event.preventDefault();
-        saveChanges();
-    }
-});
+    window.addEventListener("keydown", function (event) {
+        if (event.ctrlKey && event.key === 's') {
+            event.preventDefault();
+            saveChanges();
+        }
+    });
 
 // listen for ctrl + a
-window.addEventListener("keydown", function (event) {
-    if (event.ctrlKey && event.key === 'a') {
-        event.preventDefault();
-        addRow();
-    }
-});
+    window.addEventListener("keydown", function (event) {
+        if (event.ctrlKey && event.key === 'a') {
+            event.preventDefault();
+            addRow();
+        }
+    });
 
 // listen for ctrl
-window.addEventListener("keydown", function (event) {
+    window.addEventListener("keydown", function (event) {
         event.preventDefault();
         infoModal.value = true;
-});
+    });
 
 // listen for ctrl
-window.addEventListener("keyup", function (event) {
+    window.addEventListener("keyup", function (event) {
         event.preventDefault();
         infoModal.value = false;
-});
+    });
+
+
+}
 
 const infoModal = ref(false);
 
@@ -234,7 +244,7 @@ const infoModal = ref(false);
         Loading...
     </div>
 
-    <div class="flex justify-center mt-6">
+    <div v-if="edit" class="flex justify-center mt-6">
         <secondary-button @click="addRow">Add row</secondary-button>
     </div>
 </template>

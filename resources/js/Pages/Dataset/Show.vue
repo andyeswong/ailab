@@ -23,7 +23,6 @@ const socket = io(window.api_host, {
 });
 
 const csv_data = ref('');
-
 const loading_data = ref(false);
 
 
@@ -96,7 +95,7 @@ setTimeout(() => {
             </div>
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8  mt-3">
                 <div v-if="!data_loading" class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm rounded-md p-5">
-                    <csv-editor :csvcontent="csv_data" v-on:update:csvcontent="updateFile"></csv-editor>
+                    <csv-editor :edit="true" :csvcontent="csv_data" v-on:update:csvcontent="updateFile"></csv-editor>
                 </div>
                 <div v-else class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm rounded-md p-5">
                     <div class="flex flex-col">
