@@ -87,10 +87,18 @@ const applyChanges  = () => {
 }
 
 const addRow = () => {
+
+    var highest_col = 0;
+    json_data.value.forEach(row => {
+        if(row.col > highest_col){
+            highest_col = row.col;
+        }
+    });
+
     var row = {
         prompt: '',
         completion: '',
-        col: json_data.value.length + 1 ,
+        col: highest_col + 1 ,
     }
     json_data.value.push(row);
     editRow(row.col);
@@ -126,10 +134,45 @@ window.addEventListener("keydown", function (event) {
     }
 });
 
+// listen for ctrl + a
+window.addEventListener("keydown", function (event) {
+    if (event.ctrlKey && event.key === 'a') {
+        event.preventDefault();
+        addRow();
+    }
+});
+
+// listen for ctrl
+window.addEventListener("keydown", function (event) {
+        event.preventDefault();
+        infoModal.value = true;
+});
+
+// listen for ctrl
+window.addEventListener("keyup", function (event) {
+        event.preventDefault();
+        infoModal.value = false;
+});
+
+const infoModal = ref(false);
+
 
 </script>
 
 <template>
+
+    <modal :show="infoModal" @close="infoModal = false">
+
+        <template #body>
+            <p class="text-gray-400">
+                <strong> S</strong> to save changes
+            </p>
+            <p class="text-gray-400"   >
+                <strong> A</strong> to add row
+            </p>
+
+        </template>
+    </modal>
 
     <modal :show="edit_modal_open" @close="closeEditModal">
         <template #header>
