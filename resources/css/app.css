@@ -1,3 +1,53 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+/*bg-green-100 to 800*/
+.bg-green-100 {
+    --bg-opacity: 1;
+    background-color: #f0fff4;
+    background-color: rgba(240, 255, 244, var(--bg-opacity));
+}
+
+.bg-green-200 {
+    --bg-opacity: 1;
+    background-color: #c6f6d5;
+    background-color: rgba(198, 246, 213, var(--bg-opacity));
+}
+
+.bg-green-300 {
+    --bg-opacity: 1;
+    background-color: #9ae6b4;
+    background-color: rgba(154, 230, 180, var(--bg-opacity));
+}
+
+.bg-green-400 {
+    --bg-opacity: 1;
+    background-color: #68d391;
+    background-color: rgba(104, 211, 145, var(--bg-opacity));
+}
+
+.bg-green-500 {
+    --bg-opacity: 1;
+    background-color: #48bb78;
+    background-color: rgba(72, 187, 120, var(--bg-opacity));
+}
+
+.bg-green-600 {
+    --bg-opacity: 1;
+    background-color: #38a169;
+    background-color: rgba(56, 161, 105, var(--bg-opacity));
+}
+
+.bg-green-700 {
+    --bg-opacity: 1;
+    background-color: #2f855a;
+    background-color: rgba(47, 133, 90, var(--bg-opacity));
+}
+
+.bg-green-800 {
+    --bg-opacity: 1;
+    background-color: #276749;
+    background-color: rgba(39, 103, 73, var(--bg-opacity));
+}

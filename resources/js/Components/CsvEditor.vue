@@ -118,6 +118,15 @@ const saveChanges = () => {
 }
 
 
+// listen for ctrl + s
+window.addEventListener("keydown", function (event) {
+    if (event.ctrlKey && event.key === 's') {
+        event.preventDefault();
+        saveChanges();
+    }
+});
+
+
 </script>
 
 <template>
@@ -140,8 +149,6 @@ const saveChanges = () => {
         </template>
 
     </modal>
-
-    <primary-button class="mr-2" @click="saveChanges">Save changes</primary-button>
 
 
 
@@ -170,7 +177,7 @@ const saveChanges = () => {
                 <div class="flex-shrink">
                     <strong class="px-2 py-1 mr-1 bg-gray-800 rounded-md text-white h-full">{{ element.col }}</strong>
                 </div>
-                <div class="flex-grow hover:scale-95 transition-transform"  @click="editRow(element.col)">
+                <div class="flex-grow hover:scale-x-95 transition-transform"  @click="editRow(element.col)">
                     <div class="grid grid-cols-2">
                         <div class="bg-gray-200 rounded-l-md my-1 p-2 overflow-x-auto" >{{element.prompt}}</div>
                         <div class="bg-white rounded-r-md my-1 p-2 overflow-x-auto">{{element.completion}}</div>

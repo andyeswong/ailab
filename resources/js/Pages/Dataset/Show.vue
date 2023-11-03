@@ -83,7 +83,18 @@ setTimeout(() => {
         </template>
 
         <div class="py-12">
+
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 ">
+                    <span class="text-gray-600 dark:text-gray-400">
+        Click on a row to edit it or remove it, or click on the button below to add a new row
+    </span>
+                <br>
+
+                <span class="text-gray-600 dark:text-gray-400">
+        Press ctrl + s to save changes
+    </span>
+            </div>
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8  mt-3">
                 <div v-if="!data_loading" class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm rounded-md p-5">
                     <csv-editor :csvcontent="csv_data" v-on:update:csvcontent="updateFile"></csv-editor>
                 </div>
