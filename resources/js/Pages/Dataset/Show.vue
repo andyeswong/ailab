@@ -6,7 +6,7 @@ import {reactive} from 'vue';
 import {ref} from 'vue';
 import secondarybutton from "@/Components/SecondaryButton.vue";
 import Modal from "@/Components/Modal.vue";
-import csvEditor from "@/Components/CSVEditor.vue";
+import csvEditor from "@/Components/CsvEditor.vue";
 
 const props = defineProps({
     user: Object,
