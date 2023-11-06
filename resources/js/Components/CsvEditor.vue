@@ -291,7 +291,7 @@ const infoModal = ref(false);
     <div v-if="edit" class="flex justify-center mt-6">
         <div class="flex-grow">
             <secondary-button @click="dataset_content.page = dataset_content.page - 1" :disabled="dataset_content.page == 1">Previous page</secondary-button>
-            <span class="mx-2">{{ dataset_content.page }} / {{ dataset_content.total_pages }}</span>
+            <span class="mx-2"><input type="number" class="rounded-md w-40" v-model="dataset_content.page"> / {{ dataset_content.total_pages }}</span>
             <secondary-button @click="dataset_content.page = dataset_content.page + 1" :disabled="dataset_content.page == dataset_content.total_pages">Next page</secondary-button>
         </div>
         <div class="flex-shrink">
