@@ -15,6 +15,7 @@ const json_data = ref({});
 const csv_data = ref(props.csvcontent);
 const data_loaded = ref(false);
 const edit_modal_open = ref(false);
+
 const row_to_edit = ref({
     prompt: '',
     completion: '',
@@ -22,11 +23,32 @@ const row_to_edit = ref({
 });
 
 const emit = defineEmits(['update:csvcontent']);
+const dataset_content = ref({
+    page: 1,
+    total_pages: 0,
+    per_page: 25,
+    total: 0,
+    data: [],
+});
+
 
 
 const parseCSV = () => {
     var csv = csv_data.value;
     var lines = csv.split("\n");
+
+    dataset_content.value.total = lines.length - 1;
+
+    var pages = Math.ceil(dataset_content.value.total / dataset_content.value.per_page);
+    dataset_content.value.total_pages = pages;
+
+    // generate dataset_content.value.data
+    for(var i = 0; i < dataset_content.value.total_pages; i++){
+        var page = [];
+        dataset_content.value.data.push(page);
+    }
+
+
     var result = [];
     var headers = ['prompt', 'completion'];
     for (var i = 0; i < lines.length; i++) {
@@ -52,13 +74,17 @@ const parseCSV = () => {
             obj[headers[j]] = currentline[j];
         }
 
-
         obj['col'] = i;
+
         result.push(obj);
     }
     // remove first element
     result.shift();
 
+    result.forEach(row => {
+        var page = Math.ceil(row.col / dataset_content.value.per_page) - 1;
+        dataset_content.value.data[page].push(row);
+    });
 
     json_data.value = result;
     data_loaded.value = true;
@@ -90,6 +116,21 @@ const applyChanges  = () => {
     row.prompt = row_to_edit.value.prompt;
     row.completion = row_to_edit.value.completion;
     edit_modal_open.value = false;
+
+    if(json_data.value.length > dataset_content.value.total){
+        dataset_content.value.total = json_data.value.length;
+        var pages = Math.ceil(dataset_content.value.total / dataset_content.value.per_page);
+        dataset_content.value.total_pages = pages;
+
+        var last_page = dataset_content.value.data[dataset_content.value.data.length - 1];
+        if(last_page.length < dataset_content.value.per_page){
+            last_page.push(row);
+        }else{
+            var page = [];
+            page.push(row);
+            dataset_content.value.data.push(page);
+        }
+    }
 }
 
 const addRow = () => {
@@ -151,14 +192,18 @@ if(props.edit){
 
 // listen for ctrl
     window.addEventListener("keydown", function (event) {
-        event.preventDefault();
-        infoModal.value = true;
+        if (event.ctrlKey) {
+            event.preventDefault();
+            infoModal.value = true;
+        }
     });
 
 // listen for ctrl
     window.addEventListener("keyup", function (event) {
-        event.preventDefault();
-        infoModal.value = false;
+        if (event.ctrlKey) {
+            event.preventDefault();
+            infoModal.value = false;
+        }
     });
 
 
@@ -194,7 +239,6 @@ const infoModal = ref(false);
         <template #body>
             <input type="text" v-model="row_to_edit.prompt" class="w-full rounded-md">
             <input type="text" v-model="row_to_edit.completion" class="w-full rounded-md mt-1">
-
             <primary-button class="mt-6" @click="applyChanges">Apply</primary-button>
             <secondary-button class="ml-1" @click="removeRow(row_to_edit.col)">Remove</secondary-button>
 
@@ -222,7 +266,7 @@ const infoModal = ref(false);
 
     <draggable
         v-if="data_loaded"
-        v-model="json_data"
+        v-model="dataset_content.data[dataset_content.page - 1]"
         item-key="col"
     >
         <template #item="{element}">
@@ -245,7 +289,16 @@ const infoModal = ref(false);
     </div>
 
     <div v-if="edit" class="flex justify-center mt-6">
-        <secondary-button @click="addRow">Add row</secondary-button>
+        <div class="flex-grow">
+            <secondary-button @click="dataset_content.page = dataset_content.page - 1" :disabled="dataset_content.page == 1">Previous page</secondary-button>
+            <span class="mx-2">{{ dataset_content.page }} / {{ dataset_content.total_pages }}</span>
+            <secondary-button @click="dataset_content.page = dataset_content.page + 1" :disabled="dataset_content.page == dataset_content.total_pages">Next page</secondary-button>
+        </div>
+        <div class="flex-shrink">
+            <secondary-button class="mr-1" @click="addRow">Add row</secondary-button>
+
+            <primary-button @click="saveChanges">Save changes</primary-button>
+        </div>
     </div>
 </template>
 

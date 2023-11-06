@@ -75,7 +75,18 @@ var channel_string = host + '_' + props.user.id.toString();
 
 // when the file itself is uploaded, then the socket will emit the file name and path
 socket.on(channel_string+'_file_download', (data) => {
-    csv_data.value = data.file_content;
+    var file_content = data.file_content;
+    // conserve maximum 25 lines
+    var lines = file_content.split('\n');
+    if(lines.length > 25){
+        var new_lines = [];
+        for(var i = 0; i < 25; i++){
+            new_lines.push(lines[i]);
+        }
+        file_content = new_lines.join('\n');
+    }
+
+    csv_data.value = file_content;
 });
 
 socket.on(channel_string+'_file_update', (data) => {
