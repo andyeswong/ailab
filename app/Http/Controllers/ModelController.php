@@ -72,9 +72,15 @@ class ModelController extends Controller
             $dataset = ['data_set_name' => 'Private', 'data_set_description' => 'Private', 'data_set_path' => 'Private'];
         }
 
+        if($user->tokens()->count() > 0) {
+            $user->tokens()->delete();
+        }
+
+        $token = $user->createToken('webToken')->plainTextToken;
 
        return Inertia::render('Models/Show', [
             'model' => $model,
+            'token' => $token,
             'user' => $user,
             'is_author' => $is_author,
             'is_followed' => $is_followed,

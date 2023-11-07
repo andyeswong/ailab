@@ -33,8 +33,8 @@ Route::prefix('v1')->group(function () {
 
     Route::prefix('completions')->group(function () {
         Route::post('/', [APICompletionsController::class, 'store']);
-        Route::get('/{model_token}', [APICompletionsController::class, 'getCompletionByModel']);
-        Route::post('/{model_token}', [APICompletionsController::class, 'getCompletionByModel']);
+        Route::get('/{model_token}', [APICompletionsController::class, 'getCompletionByModel'])->middleware('auth:sanctum');
+        Route::post('/{model_token}', [APICompletionsController::class, 'getCompletionByModel'])->middleware('auth:sanctum');
 
 
     });

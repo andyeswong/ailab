@@ -16,9 +16,12 @@ const props = defineProps({
     is_author: Boolean,
     is_followed: Boolean,
     dataset: Object,
+    token: String,
 });
 
 // const chat = ref('');
+
+const search_word = ref('');
 
 const _model = reactive(props.model);
 const expanded_chat = ref(false);
@@ -77,7 +80,6 @@ var channel_string = host + '_' + props.user.id.toString();
 socket.on(channel_string+'_file_download', (data) => {
     var file_content = data.file_content;
 
-
     csv_data.value = file_content;
 });
 
@@ -114,6 +116,11 @@ if(props.is_author){
     }, 1000);
 }
 
+
+const search = (prompt) => {
+    search_word.value = prompt;
+    console.log(search_word.value);
+}
 
 
 
@@ -172,7 +179,7 @@ if(props.is_author){
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 flex">
 <!--                left modules-->
                     <div id="left_container"  :class="expanded_chat ? 'chat_container flex-grow max-w-3xl':'chat_container flex-shrink max-w-sm'">
-                        <chat :model="model"></chat>
+                        <chat :model="model" :auth_token="token" @search_prompt="search"></chat>
                         <hr class="my-2.5">
                         <ai_console :model="model"></ai_console>
                     </div>
@@ -253,7 +260,7 @@ if(props.is_author){
                             <div class="flex  max-h-96 overflow-y-auto">
 
                                 <div class="flex-grow">
-                                    <csv-editor :edit="false" :csvcontent="csv_data" v-on:update:csvcontent="updateFile"></csv-editor>
+                                    <csv-editor :edit="false" :csvcontent="csv_data" v-on:update:csvcontent="updateFile" :search_word="search_word"></csv-editor>
                                 </div>
                             </div>
                         </div>

@@ -11,6 +11,8 @@ const props = defineProps({
     search_word: String,
 });
 
+const word_to_search = ref('');
+
 
 const json_data = ref({});
 const csv_data = ref(props.csvcontent);
@@ -135,8 +137,6 @@ const applyChanges  = () => {
 
 const searchForWord = (word) => {
     var result = [];
-    search_word.value = word;
-
     json_data.value.forEach(row => {
         if(row.prompt.includes(word) || row.completion.includes(word)){
             result.push(row);
@@ -243,6 +243,16 @@ if(props.edit){
 
 const infoModal = ref(false);
 
+// watch for search word
+watch(() => props.search_word, async (newVal, oldVal) => {
+    word_to_search.value = newVal;
+});
+
+// watch for word to search
+watch(() => word_to_search.value, async (newVal, oldVal) => {
+    searchForWord(newVal);
+});
+
 
 </script>
 
@@ -282,7 +292,7 @@ const infoModal = ref(false);
 
     <div class="flex  mb-3">
         <div class="flex-grow">
-            <input class="rounded-md w-full" type="text" placeholder="Search for a word" @keyup="searchForWord($event.target.value)" >
+            <input class="rounded-md w-full" type="text" placeholder="Search for a word" v-model="word_to_search" >
 
         </div>
         <div class="flex-shrink">
