@@ -8,6 +8,7 @@ import SecondaryButton from "@/Components/SecondaryButton.vue";
 const props = defineProps({
     csvcontent: String,
     edit: Boolean,
+    search_word: String,
 });
 
 
@@ -30,8 +31,6 @@ const dataset_content = ref({
     total: 0,
     data: [],
 });
-
-
 
 const parseCSV = () => {
     var csv = csv_data.value;
@@ -136,6 +135,8 @@ const applyChanges  = () => {
 
 const searchForWord = (word) => {
     var result = [];
+    search_word.value = word;
+
     json_data.value.forEach(row => {
         if(row.prompt.includes(word) || row.completion.includes(word)){
             result.push(row);
@@ -143,6 +144,21 @@ const searchForWord = (word) => {
     });
     dataset_content.value.data = [];
     dataset_content.value.data.push(result);
+
+    var count = result.length;
+    dataset_content.value.total = count;
+
+
+    if(word == ""){
+        dataset_content.value = {
+            page: 1,
+            total_pages: 0,
+            per_page: 25,
+            total: 0,
+            data: [],
+        };
+        parseCSV();
+    }
 }
 
 const cleanSearch = () => {
@@ -264,8 +280,14 @@ const infoModal = ref(false);
     </modal>
 
 
-    <div class="flex">
-        <input class="rounded-md w-full" type="text" placeholder="Search for a word" @keyup="searchForWord($event.target.value)" >
+    <div class="flex  mb-3">
+        <div class="flex-grow">
+            <input class="rounded-md w-full" type="text" placeholder="Search for a word" @keyup="searchForWord($event.target.value)" >
+
+        </div>
+        <div class="flex-shrink">
+            <span class="p-3 text-gray-400">results - {{dataset_content.total}}</span>
+        </div>
     </div>
 
 
