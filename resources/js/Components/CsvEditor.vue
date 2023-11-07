@@ -133,6 +133,22 @@ const applyChanges  = () => {
     }
 }
 
+
+const searchForWord = (word) => {
+    var result = [];
+    json_data.value.forEach(row => {
+        if(row.prompt.includes(word) || row.completion.includes(word)){
+            result.push(row);
+        }
+    });
+    dataset_content.value.data = [];
+    dataset_content.value.data.push(result);
+}
+
+const cleanSearch = () => {
+    parseCSV();
+}
+
 const addRow = () => {
 
     var highest_col = 0;
@@ -246,6 +262,11 @@ const infoModal = ref(false);
         </template>
 
     </modal>
+
+
+    <div class="flex">
+        <input class="rounded-md w-full" type="text" placeholder="Search for a word" @keyup="searchForWord($event.target.value)" >
+    </div>
 
 
 
